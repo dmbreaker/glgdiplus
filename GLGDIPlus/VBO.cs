@@ -2,7 +2,7 @@ using System;
 using OpenTK.Graphics.OpenGL;
 
 
-namespace Engine
+namespace GLGDIPlus
 {
     public class VBO
     {
@@ -12,6 +12,8 @@ namespace Engine
         int vboID;
         int texID;
 
+		internal bool IsVBOSupported = false;
+
 
         /// <summary>
         /// Builds VBO for vertices.
@@ -19,8 +21,7 @@ namespace Engine
         public void Build()
         {
             //if (GL.SupportsExtension("VERSION_1_5"))
-			string verion = GL.GetString(StringName.Version);
-			if( true )
+			if( IsVBOSupported )
             {
                 // Delete old VBO
                 if (vboID != 0) GL.DeleteBuffers(1, ref vboID);
@@ -39,8 +40,7 @@ namespace Engine
         public void BuildTex()
         {
             //if (GL.SupportsExtension("VERSION_1_5"))
-			string verion = GL.GetString(StringName.Version);
-			if (true)
+			if (IsVBOSupported)
             {
                 // Delete old VBO
                 if (texID != 0) GL.DeleteBuffers(1, ref texID);
@@ -91,12 +91,10 @@ namespace Engine
         {
             // Use VBOs if they are supported
             //if (GL.SupportsExtension("VERSION_1_5"))
-			string verion = GL.GetString(StringName.Version);
-			if (true)
+			if (IsVBOSupported)
             {
-				GL.EnableClientState(ArrayCap.VertexArray | ArrayCap.TextureCoordArray);
-                //GL.EnableClientState(EnableCap.VertexArray);
-                //GL.EnableClientState(EnableCap.TextureCoordArray);
+				GL.EnableClientState(ArrayCap.VertexArray);
+				GL.EnableClientState(ArrayCap.TextureCoordArray);
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vboID);
 				GL.VertexPointer(2, VertexPointerType.Float, 0, IntPtr.Zero);
@@ -106,9 +104,8 @@ namespace Engine
 
                 GL.DrawArrays(mode, 0, lenght);
 
-				GL.DisableClientState(ArrayCap.VertexArray | ArrayCap.TextureCoordArray);
-				//GL.DisableClientState(EnableCap.VertexArray);
-				//GL.DisableClientState(EnableCap.TextureCoordArray);
+				GL.DisableClientState(ArrayCap.VertexArray);
+				GL.DisableClientState(ArrayCap.TextureCoordArray);
             }
             // Use immediate mode
             else
@@ -124,5 +121,6 @@ namespace Engine
                 GL.End();
             }
         }
+		// ============================================================
     }
 }

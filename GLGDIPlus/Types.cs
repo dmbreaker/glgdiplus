@@ -1,4 +1,4 @@
-namespace Engine
+namespace GLGDIPlus
 {
     public struct Vertex
     {

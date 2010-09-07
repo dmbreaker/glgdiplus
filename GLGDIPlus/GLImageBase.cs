@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 
 
-namespace Engine
+namespace GLGDIPlus
 {
     public class IProperties
     {

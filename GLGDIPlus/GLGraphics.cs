@@ -11,6 +11,10 @@ namespace GLGDIPlus
 {
 	public class GLGraphics
 	{
+		// ============================================================
+		private bool IsVBOSupported = false;
+		private bool IsLinearFiltering = false;
+		// ============================================================
 		/// <summary>
 		/// Initializes 2D mode.
 		/// </summary>
@@ -37,6 +41,10 @@ namespace GLGDIPlus
 
 			GL.Enable(EnableCap.Texture2D);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+			IsVBOSupported = IsHigherOrEqualVersion(1, 5);
+
+			SetLinearFiltering(true);
 		}
 
 
@@ -173,6 +181,7 @@ namespace GLGDIPlus
 		/// <param name="value"></param>
 		public void SetLinearFiltering(bool value)
 		{
+			IsLinearFiltering = value;
 			if (value)
 			{
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
@@ -183,6 +192,44 @@ namespace GLGDIPlus
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 			}
+		}
+		// ============================================================
+		public void StartDraw()
+		{
+			SetLinearFiltering(IsLinearFiltering);
+		}
+		// ============================================================
+		internal bool IsHigherOrEqualVersion(int major, int minor)
+		{
+			string version = GL.GetString(StringName.Version);
+			int index = version.IndexOf('.');
+			int vMajor = 0;
+			int vMinor = 0;
+			string tmp = "";
+			if (index >= 0)
+			{
+				tmp = version.Substring(0, index);
+				int.TryParse(tmp, out vMajor);
+
+				version = version.Substring(index + 1);
+				index = version.IndexOf('.');
+				if (index < 0 && version.Length > 0)
+				{
+					int.TryParse(version, out vMinor);
+				}
+				else
+				{
+					tmp = version.Substring(0, index);
+					int.TryParse(tmp, out vMinor);
+				}
+
+				if (vMajor > major || (vMajor == major && vMinor >= minor) )
+					return true;
+				else
+					return false;
+			}
+			else
+				return false;
 		}
 
 		// ============================================================
@@ -306,6 +353,44 @@ namespace GLGDIPlus
 			GL.Disable(EnableCap.ColorArray);
 			GL.Enable(EnableCap.Texture2D);
 		}
+		// ============================================================
+		public void DrawImage( GLImage img, int x, int y )
+		{
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw(x, y);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, int destWidth, int destHeight)
+		{
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw(x, y, destWidth, destHeight);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, int imgX, int imgY, int imgW, int imgH)
+		{
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw(x, y, imgX, imgY, imgW, imgH);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
+		{
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, Rectangle dest, Rectangle src)
+		{
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw(dest.X, dest.Y, dest.Width, dest.Height,
+						src.X, src.Y, src.Width, src.Height);
+		}
+		// ============================================================
+		// incomplete
+		//public void DrawMultiImage(GLMultiImage img)
+		//{
+		//    img.IsVBOSupported = IsVBOSupported;
+		//    img.Draw(x, y, w, h);
+		//}
 		// ============================================================
 	}
 }

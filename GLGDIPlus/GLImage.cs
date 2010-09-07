@@ -3,9 +3,9 @@ using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 
 
-namespace Engine
+namespace GLGDIPlus
 {
-    public class Image : IProperties
+    public class GLImage : IProperties
     {
         public Bitmap bitmap;          // Used to load image
         public int TextureIndex;            // Holds image data
@@ -17,7 +17,7 @@ namespace Engine
         /// <summary>
         /// Creates 4 vertices and texcoords for quad.
         /// </summary>
-        public Image()
+        public GLImage()
         {
             vbo.vertices = new Vertex[4];    // Create 4 vertices for quad
             vbo.texcoords = new TexCoord[4]; // Texture coordinates for quad
@@ -50,10 +50,8 @@ namespace Engine
             bitmap.UnlockBits(data);
 
             // Setup filtering
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
         }
 
 		/// <summary>
@@ -62,13 +60,6 @@ namespace Engine
 		/// <param name="path">Image path.</param>
 		public void FromBitmap(Bitmap src)
 		{
-			//var bmp = new Bitmap(src.Width, src.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			//using (var g = Graphics.FromImage(bmp))
-			//{
-			//    g.DrawImage(src, new Rectangle(0, 0, src.Width, src.Height),
-			//                    new Rectangle(0, 0, src.Width, src.Height), GraphicsUnit.Pixel);
-			//}
-			//bitmap = bmp;
 			bitmap = src;
 
 			// Generate texture
@@ -88,10 +79,8 @@ namespace Engine
 			bitmap.UnlockBits(data);
 
 			// Setup filtering
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 		}
 
 
@@ -109,7 +98,7 @@ namespace Engine
         /// </summary>
         /// <param name="x">X position of left-upper corner.</param>
         /// <param name="y">Y position of left-upper corner.</param>
-        public void Draw(int x, int y)
+        internal void Draw(int x, int y)
         {
             Draw(x, y, Width, Height, 0, 0, Width, Height);
         }
@@ -124,7 +113,7 @@ namespace Engine
         /// <param name="imgY">Y positon on image.</param>
         /// <param name="imgW">Width of image part to be drawn.</param>
         /// <param name="imgH">Height of image part to be drawn.</param>
-        public void Draw(int x, int y, int imgX, int imgY, int imgW, int imgH)
+		internal void Draw(int x, int y, int imgX, int imgY, int imgW, int imgH)
         {
             Draw(x, y, Width, Height, imgX, imgY, imgW, imgH);
         }
@@ -137,7 +126,7 @@ namespace Engine
         /// <param name="y">Y position of left-upper corner.</param>
         /// <param name="w">Width of image.</param>
         /// <param name="h">Height of image.</param>
-        public void Draw(int x, int y, int w, int h)
+		internal void Draw(int x, int y, int w, int h)
         {
             Draw(x, y, w, h, 0, 0, this.Width, this.Height);
         }
@@ -154,8 +143,10 @@ namespace Engine
         /// <param name="imgY">Y positon on image.</param>
         /// <param name="imgW">Width of image part to be drawn.</param>
         /// <param name="imgH">Height of image part to be drawn.</param>
-        public void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
+		internal void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
         {
+			SetBlending();	// всегда включаем блендинг, чтобы прозрачность рисовать
+
             // Texture coordinates
             float u1 = 0.0f, u2 = 0.0f, v1 = 0.0f, v2 = 0.0f;
 
@@ -244,5 +235,15 @@ namespace Engine
 
             vbo.Build();
         }
+		// ============================================================
+		public bool IsVBOSupported
+		{
+			get { return vbo.IsVBOSupported; }
+			set
+			{
+				vbo.IsVBOSupported = value;
+			}
+		}
+		// ============================================================
     }
 }

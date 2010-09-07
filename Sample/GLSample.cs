@@ -16,6 +16,7 @@ namespace Sample
 		bool mIsLoaded = false;
 
 		GLGraphics mGraphics = new GLGraphics();
+		GLImage mImage = new GLImage();
 		// ============================================================
 		public GLSample()
 		{
@@ -37,10 +38,14 @@ namespace Sample
 			MakeCurrent();
 
 			GLGraphics g = mGraphics;
+			g.StartDraw();		// нужно вызывать, чтобы выполнить необходимые действия перед отрисовкой
+
 			g.Reset();
 			g.Clear();
 
-			g.DrawLine(Color.AliceBlue, 0, 0, Width, Height);
+			g.DrawImage(mImage, 0, 0, Width, Height);
+			g.FillRectangle(Color.Blue, (Width - 60) / 2, (Height - 40) / 2, 60, 40);
+			g.DrawLine(Color.Green, 0, 0, Width, Height);
 
 			SwapBuffers();
 		}
@@ -54,10 +59,12 @@ namespace Sample
 			mIsLoaded = true;	// OpenGL контекст уже должен быть создан
 
 			mGraphics.Init();
-			mGraphics.Clear();
 			mGraphics.Reset();
+			mGraphics.Clear();
 			mGraphics.SetLinearFiltering(false);	// чтобы картинки были четкими (но при скейлинге они будут пикселизированы)
 			mGraphics.SetClearColor(SystemColors.ActiveCaption);
+
+			mImage.Load("./res/mult.jpg");
 		}
 
 		private void GLSample_Resize(object sender, EventArgs e)

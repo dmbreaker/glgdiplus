@@ -36,6 +36,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Name = "GLSample";
 			this.Load += new System.EventHandler(this.GLSample_Load);
+			this.Resize += new System.EventHandler(this.GLSample_Resize);
 			this.ResumeLayout(false);
 
 		}

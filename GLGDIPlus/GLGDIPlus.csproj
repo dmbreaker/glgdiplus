@@ -38,7 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GLGraphics.cs" />
-    <Compile Include="Helper.cs" />
     <Compile Include="GLImage.cs" />
     <Compile Include="GLImageBase.cs" />
     <Compile Include="MultiImage.cs" />

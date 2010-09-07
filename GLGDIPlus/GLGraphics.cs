@@ -184,5 +184,128 @@ namespace GLGDIPlus
 				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 			}
 		}
+
+		// ============================================================
+		// ============================================================
+		// ============================================================
+		public void DrawLine(Color c, int x1, int y1, int x2, int y2)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Blend);
+			GL.Color4(c);
+
+			GL.Begin(BeginMode.Lines);
+
+			GL.Vertex2((double)x1, (double)y1);
+			GL.Vertex2((double)x2, (double)y2);
+
+			GL.End();
+
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Texture2D);
+		}
+		// ============================================================
+		public void FillRectangle(Color c, Rectangle r)
+		{
+			FillRectangle(c, r.X, r.Y, r.Width, r.Height);
+		}
+		// ============================================================
+		public void FillRectangle(Color c, int x, int y, int w, int h)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Blend);
+			GL.Color4(c);
+
+			GL.Begin(BeginMode.Quads);
+
+			GL.Vertex2((double)x, (double)y);
+			GL.Vertex2((double)x + w, (double)y);
+			GL.Vertex2((double)x + w, (double)y + h);
+			GL.Vertex2((double)x, (double)y + h);
+
+			GL.End();
+
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Texture2D);
+		}
+		// ============================================================
+		public void DrawRectangle(Color c, Rectangle r)
+		{
+			DrawRectangle(c, r.X, r.Y, r.Width, r.Height);
+		}
+		// ============================================================
+		public void DrawRectangle(Color c, int x, int y, int w, int h)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Blend);
+			GL.Color4(c);
+
+			GL.Begin(BeginMode.LineStrip);
+
+			GL.Vertex2((double)x, (double)y);
+			GL.Vertex2((double)x + w, (double)y);
+			GL.Vertex2((double)x + w, (double)y + h);
+			GL.Vertex2((double)x, (double)y + h);
+			GL.Vertex2((double)x, (double)y);
+
+			GL.End();
+
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Texture2D);
+		}
+		// ============================================================
+		public void DrawPoint(Color c, Point pnt, float size)
+		{
+			DrawPointF(c, new PointF(pnt.X, pnt.Y), size);
+		}
+		// ============================================================
+		// ============================================================
+		public void DrawPointF(Color c, PointF pnt, float size)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Blend);
+			GL.PointSize(size);
+			GL.Color4(c);
+
+			GL.Begin(BeginMode.Points);
+
+			GL.Vertex2(pnt.X, pnt.Y);
+
+			GL.End();
+
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Texture2D);
+		}
+		// ============================================================
+		public void DrawPointsF(Color c, List<PointF> points, float size)
+		{
+			GL.Disable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Blend);
+			GL.PointSize(size);
+			GL.Color4(c);
+
+			GL.Begin(BeginMode.Points);
+
+			foreach (var pnt in points)
+			{
+				GL.Vertex2(pnt.X, pnt.Y);
+			}
+
+			GL.End();
+
+			GL.Disable(EnableCap.Blend);
+			GL.Disable(EnableCap.ColorArray);
+			GL.Enable(EnableCap.Texture2D);
+		}
+		// ============================================================
 	}
 }

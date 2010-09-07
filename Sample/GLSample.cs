@@ -24,6 +24,13 @@ namespace Sample
 		// ============================================================
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			if (this.DesignMode)
+			{
+				e.Graphics.Clear(this.BackColor);
+				e.Graphics.Flush();
+				return;
+			}
+
 			if (!mIsLoaded)		// чтобы отследить, что OpenGL контекст еще не создан
 				return;
 
@@ -33,21 +40,34 @@ namespace Sample
 			g.Reset();
 			g.Clear();
 
+			g.DrawLine(Color.AliceBlue, 0, 0, Width, Height);
+
 			SwapBuffers();
 		}
 		// ============================================================
 		private void GLSample_Load(object sender, EventArgs e)
 		{
+			if (this.DesignMode)
+				return;
+
+
 			mIsLoaded = true;	// OpenGL контекст уже должен быть создан
 
-			if (this.IsHandleCreated)
+			mGraphics.Init();
+			mGraphics.Clear();
+			mGraphics.Reset();
+			mGraphics.SetLinearFiltering(false);	// чтобы картинки были четкими (но при скейлинге они будут пикселизированы)
+			mGraphics.SetClearColor(SystemColors.ActiveCaption);
+		}
+
+		private void GLSample_Resize(object sender, EventArgs e)
+		{
+			if (this.DesignMode)
 			{
-				mGraphics.Init();
-				mGraphics.Clear();
-				mGraphics.Reset();
-				mGraphics.SetLinearFiltering(false);	// чтобы картинки были четкими (но при скейлинге они будут пикселизированы)
-				mGraphics.SetClearColor(SystemColors.ActiveCaption);
+				return;
 			}
+
+			mGraphics.Resize(Width, Height);
 		}
 		// ============================================================
 	}

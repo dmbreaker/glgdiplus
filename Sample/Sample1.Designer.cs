@@ -34,10 +34,10 @@
 			// glSample1
 			// 
 			this.glSample1.BackColor = System.Drawing.Color.Black;
-			this.glSample1.Location = new System.Drawing.Point(21, 33);
+			this.glSample1.Location = new System.Drawing.Point(13, 13);
 			this.glSample1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.glSample1.Name = "glSample1";
-			this.glSample1.Size = new System.Drawing.Size(541, 240);
+			this.glSample1.Size = new System.Drawing.Size(509, 257);
 			this.glSample1.TabIndex = 0;
 			this.glSample1.VSync = false;
 			// 
@@ -45,8 +45,10 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(614, 344);
+			this.ClientSize = new System.Drawing.Size(535, 283);
 			this.Controls.Add(this.glSample1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
 			this.Name = "Sample1";
 			this.Text = "Form1";
 			this.ResumeLayout(false);

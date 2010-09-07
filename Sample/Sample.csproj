@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GLSample.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GLSample.Designer.cs">
+      <DependentUpon>GLSample.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sample1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -50,6 +56,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GLSample.resx">
+      <DependentUpon>GLSample.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Sample1.resx">
       <DependentUpon>Sample1.cs</DependentUpon>
     </EmbeddedResource>

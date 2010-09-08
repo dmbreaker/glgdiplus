@@ -42,12 +42,13 @@ namespace Sample
 
 			g.Reset();
 			g.Clear();
-
-			g.DrawImage(mImage, 0, 100, Width/2, Height/2);	// downscaled image
+			g.DrawImage(mImage, 10, 100, Width/2, Height/2);	// downscaled image
 			g.FillRectangle(Color.Gray, (Width - 60) / 2, (Height - 40) / 2, 60, 40);
 			g.DrawLine(Color.Green, 0, 0, Width, Height);
-			g.DrawString("This is a text on control", mFont, Color.AliceBlue, 150, 30);
+			g.DrawString("This is a text on control", mFont, Color.AliceBlue, 150, 0);
 
+			g.DrawString("Уменьшенное изображение", mFont, Color.AliceBlue, 10, 100+(Height/2));
+			g.DrawString("Functions:\n DrawString\n DrawImage\n DrawLine\n DrawRectangle\n FillRectangle\n DrawPoint\n DrawPoints", mFont, Color.AliceBlue, 350, 0);
 			SwapBuffers();
 		}
 		// ============================================================

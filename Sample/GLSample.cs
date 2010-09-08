@@ -23,29 +23,30 @@ namespace Sample
 			InitializeComponent();
 		}
 		// ============================================================
+		Font mFont = new Font("Arial", 10f); 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (this.DesignMode)
+			if (this.DesignMode)	// в режиме дизайна просто закрашиваем контрол цветом
 			{
 				e.Graphics.Clear(this.BackColor);
 				e.Graphics.Flush();
 				return;
 			}
 
-			if (!mIsLoaded)		// чтобы отследить, что OpenGL контекст еще не создан
+			if (!mIsLoaded)		// если OpenGL контекст еще не создан
 				return;
 
 			MakeCurrent();
 
 			GLGraphics g = mGraphics;
-			g.StartDraw();		// нужно вызывать, чтобы выполнить необходимые действия перед отрисовкой
 
 			g.Reset();
 			g.Clear();
 
-			g.DrawImage(mImage, 0, 0, Width, Height);
-			g.FillRectangle(Color.Blue, (Width - 60) / 2, (Height - 40) / 2, 60, 40);
+			g.DrawImage(mImage, 0, 100, Width/2, Height/2);	// downscaled image
+			g.FillRectangle(Color.Gray, (Width - 60) / 2, (Height - 40) / 2, 60, 40);
 			g.DrawLine(Color.Green, 0, 0, Width, Height);
+			g.DrawString("This is a text on control", mFont, Color.AliceBlue, 150, 30);
 
 			SwapBuffers();
 		}

@@ -5,6 +5,9 @@ using System.Text;
 using OpenTK;
 //using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+
+using opengl = OpenTK.Graphics;
+
 using System.Drawing;
 
 namespace GLGDIPlus
@@ -14,6 +17,8 @@ namespace GLGDIPlus
 		// ============================================================
 		private bool IsVBOSupported = false;
 		private bool IsLinearFiltering = false;
+
+		private bool mIsFilteringSet = false;
 		// ============================================================
 		/// <summary>
 		/// Initializes 2D mode.
@@ -194,10 +199,10 @@ namespace GLGDIPlus
 			}
 		}
 		// ============================================================
-		public void StartDraw()
-		{
-			SetLinearFiltering(IsLinearFiltering);
-		}
+		//public void StartDraw()
+		//{
+		//    SetLinearFiltering(IsLinearFiltering);
+		//}
 		// ============================================================
 		internal bool IsHigherOrEqualVersion(int major, int minor)
 		{
@@ -354,42 +359,150 @@ namespace GLGDIPlus
 			GL.Enable(EnableCap.Texture2D);
 		}
 		// ============================================================
+		private void EnsureFiltering()
+		{
+			if (!mIsFilteringSet)
+			{
+				mIsFilteringSet = true;
+				SetLinearFiltering(IsLinearFiltering);
+			}
+		}
+		// ============================================================
 		public void DrawImage( GLImage img, int x, int y )
 		{
+			EnsureFiltering();
+
 			img.IsVBOSupported = IsVBOSupported;
 			img.Draw(x, y);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int destWidth, int destHeight)
 		{
+			EnsureFiltering();
+
 			img.IsVBOSupported = IsVBOSupported;
 			img.Draw(x, y, destWidth, destHeight);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int imgX, int imgY, int imgW, int imgH)
 		{
+			EnsureFiltering();
+
 			img.IsVBOSupported = IsVBOSupported;
 			img.Draw(x, y, imgX, imgY, imgW, imgH);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
 		{
+			EnsureFiltering();
+
 			img.IsVBOSupported = IsVBOSupported;
 			img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, Rectangle dest, Rectangle src)
 		{
+			EnsureFiltering();
+
 			img.IsVBOSupported = IsVBOSupported;
 			img.Draw(dest.X, dest.Y, dest.Width, dest.Height,
 						src.X, src.Y, src.Width, src.Height);
 		}
 		// ============================================================
+		private opengl.TextPrinter mTPrinterHigh = new opengl.TextPrinter(opengl.TextQuality.High);
+		private opengl.TextPrinter mTPrinterMedium = new opengl.TextPrinter(opengl.TextQuality.Medium);
+		private opengl.TextPrinter mTPrinterLow = new opengl.TextPrinter(opengl.TextQuality.Low);
+
+		public enum TextQuality
+		{
+			High,
+			Medium,
+			Low
+		}
+		// ============================================================
+		private void DrawString(opengl.TextPrinter printer, string text, Font font, Color c,
+								RectangleF r)
+		{
+			printer.Begin();
+			printer.Print(text, font, c, r);
+			printer.End();
+		}
+		// ============================================================
+		private void DrawString(opengl.TextPrinter printer, string text, Font font, Color c,
+								float x, float y)
+		{
+			printer.Begin();
+
+			GL.PushMatrix();
+			GL.Translate(x, y, 0);
+			
+			printer.Print(text, font, c);
+
+			GL.PopMatrix();
+
+			printer.End();
+		}
+		// ============================================================
+		public void DrawString(string text, Font font, Color c, float x, float y)
+		{
+			DrawString(mTPrinterHigh, text, font, c, x, y);
+		}
+		// ============================================================
+		public void DrawString(string text, Font font, Color c, float x, float y,
+								TextQuality q)
+		{
+			opengl.TextPrinter printer = null;
+			switch (q)
+			{
+				case TextQuality.High:
+					printer = mTPrinterHigh;
+					break;
+
+				case TextQuality.Medium:
+					printer = mTPrinterMedium;
+					break;
+
+				case TextQuality.Low:
+					printer = mTPrinterLow;
+					break;
+			}
+
+			DrawString(printer, text, font, c, x, y);
+		}
+		// ============================================================
+		private void DrawString(string text, Font font, Color c, RectangleF r)
+		{
+			DrawString(mTPrinterHigh, text, font, c, r);
+		}
+		// ============================================================
+		public void DrawString(string text, Font font, Color c, RectangleF r, TextQuality q)
+		{
+			opengl.TextPrinter printer = null;
+			switch(q)
+			{
+				case TextQuality.High:
+					printer = mTPrinterHigh;
+					break;
+
+				case TextQuality.Medium:
+					printer = mTPrinterMedium;
+					break;
+
+				case TextQuality.Low:
+					printer = mTPrinterLow;
+					break;
+			}
+
+			DrawString(printer, text, font, c, r);
+		}
+		// ============================================================
 		// incomplete
 		//public void DrawMultiImage(GLMultiImage img)
 		//{
-		//    img.IsVBOSupported = IsVBOSupported;
-		//    img.Draw(x, y, w, h);
+		//	EnsureFiltering();
+		//
+		//	img.IsVBOSupported = IsVBOSupported;
+		//	img.Draw(x, y, w, h);
 		//}
 		// ============================================================
 	}

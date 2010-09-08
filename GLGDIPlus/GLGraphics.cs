@@ -497,13 +497,13 @@ namespace GLGDIPlus
 		}
 		// ============================================================
 		// incomplete
-		//public void DrawMultiImage(GLMultiImage img)
-		//{
-		//	EnsureFiltering();
-		//
-		//	img.IsVBOSupported = IsVBOSupported;
-		//	img.Draw(x, y, w, h);
-		//}
+		public void DrawMultiImage(GLMultiImage img)
+		{
+			EnsureFiltering();
+
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw();
+		}
 		// ============================================================
 	}
 }

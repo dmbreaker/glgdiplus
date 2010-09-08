@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace GLGDIPlus
 {
-    public class IProperties
+    public class GLImageBase
     {
         public int Width, Height, OriginX, OriginY;
         public float Rotation, ScaleX = 1.0f, ScaleY = 1.0f;

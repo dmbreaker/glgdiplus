@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace GLGDIPlus
 {
-    public class GLImage : IProperties
+    public class GLImage : GLImageBase
     {
         public Bitmap bitmap;          // Used to load image
         public int TextureIndex;            // Holds image data
@@ -19,8 +19,8 @@ namespace GLGDIPlus
         /// </summary>
         public GLImage()
         {
-            vbo.vertices = new Vertex[4];    // Create 4 vertices for quad
-            vbo.texcoords = new TexCoord[4]; // Texture coordinates for quad
+            vbo.Vertices = new Vertex[4];    // Create 4 vertices for quad
+            vbo.Texcoords = new TexCoord[4]; // Texture coordinates for quad
         }
 
 
@@ -50,8 +50,8 @@ namespace GLGDIPlus
             bitmap.UnlockBits(data);
 
             // Setup filtering
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
         }
 
 		/// <summary>
@@ -159,14 +159,14 @@ namespace GLGDIPlus
             if (rebuild)
             {
                 // Check if texture coordinates have changed
-                if (vbo.texcoords[0].u != u1 || vbo.texcoords[1].u != u2 || vbo.texcoords[2].v != v1 || vbo.texcoords[0].v != v2)
+                if (vbo.Texcoords[0].u != u1 || vbo.Texcoords[1].u != u2 || vbo.Texcoords[2].v != v1 || vbo.Texcoords[0].v != v2)
                 {
                     // Update texcoords for all vertices
                     BuildTexcoords(u1, u2, v1, v2);
                 }
 
                 // Check if position coordinates have changed
-                if (vbo.vertices[0].x != x || vbo.vertices[2].y != y || vbo.vertices[0].y != y + h || vbo.vertices[1].x != x + w)
+                if (vbo.Vertices[0].x != x || vbo.Vertices[2].y != y || vbo.Vertices[0].y != y + h || vbo.Vertices[1].x != x + w)
                 {
                     BuildVertices(x, y, w, h);
                 }
@@ -202,14 +202,14 @@ namespace GLGDIPlus
         /// <param name="v2">V2.</param>
         public void BuildTexcoords(float u1, float u2, float v1, float v2)
         {
-            vbo.texcoords[0].u = u1;
-            vbo.texcoords[0].v = v2;
-            vbo.texcoords[1].u = u2;
-            vbo.texcoords[1].v = v2;
-            vbo.texcoords[2].u = u2;
-            vbo.texcoords[2].v = v1;
-            vbo.texcoords[3].u = u1;
-            vbo.texcoords[3].v = v1;
+            vbo.Texcoords[0].u = u1;
+            vbo.Texcoords[0].v = v2;
+            vbo.Texcoords[1].u = u2;
+            vbo.Texcoords[1].v = v2;
+            vbo.Texcoords[2].u = u2;
+            vbo.Texcoords[2].v = v1;
+            vbo.Texcoords[3].u = u1;
+            vbo.Texcoords[3].v = v1;
 
             vbo.BuildTex();
         }
@@ -224,16 +224,16 @@ namespace GLGDIPlus
         /// <param name="h">Height.</param>
         public void BuildVertices(int x, int y, int w, int h)
         {
-			vbo.vertices[0].x = x;
-			vbo.vertices[0].y = y + h;
-			vbo.vertices[1].x = x + w;
-			vbo.vertices[1].y = y + h;
-			vbo.vertices[2].x = x + w;
-			vbo.vertices[2].y = y;
-			vbo.vertices[3].x = x;
-			vbo.vertices[3].y = y;
+			vbo.Vertices[0].x = x;
+			vbo.Vertices[0].y = y + h;
+			vbo.Vertices[1].x = x + w;
+			vbo.Vertices[1].y = y + h;
+			vbo.Vertices[2].x = x + w;
+			vbo.Vertices[2].y = y;
+			vbo.Vertices[3].x = x;
+			vbo.Vertices[3].y = y;
 
-            vbo.Build();
+            vbo.BuildVertices();
         }
 		// ============================================================
 		public bool IsVBOSupported

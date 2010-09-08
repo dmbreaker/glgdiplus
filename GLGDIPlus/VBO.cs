@@ -6,11 +6,11 @@ namespace GLGDIPlus
 {
     public class VBO
     {
-        public Vertex[] vertices;     // Image vertices
-        public TexCoord[] texcoords;  // Image texture coordinates
+		internal Vertex[] Vertices;     // Image vertices
+		internal TexCoord[] Texcoords;  // Image texture coordinates
 
-        int vboID;
-        int texID;
+		internal int VboID;
+		internal int TexID;
 
 		internal bool IsVBOSupported = false;
 
@@ -18,18 +18,18 @@ namespace GLGDIPlus
         /// <summary>
         /// Builds VBO for vertices.
         /// </summary>
-        public void Build()
+		internal void BuildVertices()
         {
             //if (GL.SupportsExtension("VERSION_1_5"))
 			if( IsVBOSupported )
             {
                 // Delete old VBO
-                if (vboID != 0) GL.DeleteBuffers(1, ref vboID);
+                if (VboID != 0) GL.DeleteBuffers(1, ref VboID);
 
                 // VBO for vertices
-                GL.GenBuffers(1, out vboID);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, vboID);
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertices.Length * 2 * sizeof(float)), vertices, BufferUsageHint.StaticDraw);
+                GL.GenBuffers(1, out VboID);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VboID);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertices.Length * 2 * sizeof(float)), Vertices, BufferUsageHint.StaticDraw);
             }
         }
 
@@ -37,18 +37,18 @@ namespace GLGDIPlus
         /// <summary>
         /// Builds VBO for texcoords.
         /// </summary>
-        public void BuildTex()
+        internal void BuildTex()
         {
             //if (GL.SupportsExtension("VERSION_1_5"))
 			if (IsVBOSupported)
             {
                 // Delete old VBO
-                if (texID != 0) GL.DeleteBuffers(1, ref texID);
+                if (TexID != 0) GL.DeleteBuffers(1, ref TexID);
 
                 // VBO for texcoords
-                GL.GenBuffers(1, out texID);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, texID);
-                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(texcoords.Length * 2 * sizeof(float)), texcoords, BufferUsageHint.StaticDraw);
+                GL.GenBuffers(1, out TexID);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, TexID);
+                GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Texcoords.Length * 2 * sizeof(float)), Texcoords, BufferUsageHint.StaticDraw);
             }
         }
 
@@ -56,9 +56,9 @@ namespace GLGDIPlus
         /// <summary>
         /// Draws VBO.
         /// </summary>
-        public void Draw()
+        internal void Draw()
         {
-            Draw(vertices.Length, BeginMode.Quads);
+            Draw(Vertices.Length, BeginMode.Quads);
         }
 
 
@@ -66,9 +66,9 @@ namespace GLGDIPlus
         /// Draws VBO.
         /// </summary>
         /// <param name="mode">Mode used for drawing.</param>
-        public void Draw(BeginMode mode)
+        internal void Draw(BeginMode mode)
         {
-            Draw(vertices.Length, mode);
+            Draw(Vertices.Length, mode);
         }
 
 
@@ -76,7 +76,7 @@ namespace GLGDIPlus
         /// Draws VBO.
         /// </summary>
         /// <param name="lenght">Number of vertices to be drawn from array.</param>
-        public void Draw(int lenght)
+        internal void Draw(int lenght)
         {
             Draw(lenght, BeginMode.Quads);
         }
@@ -87,7 +87,7 @@ namespace GLGDIPlus
         /// </summary>
         /// <param name="lenght">Number of vertices to be drawn from array.</param>
         /// <param name="mode">Mode used for drawing.</param>
-        public void Draw(int lenght, BeginMode mode)
+        internal void Draw(int lenght, BeginMode mode)
         {
             // Use VBOs if they are supported
             //if (GL.SupportsExtension("VERSION_1_5"))
@@ -96,10 +96,10 @@ namespace GLGDIPlus
 				GL.EnableClientState(ArrayCap.VertexArray);
 				GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-                GL.BindBuffer(BufferTarget.ArrayBuffer, vboID);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VboID);
 				GL.VertexPointer(2, VertexPointerType.Float, 0, IntPtr.Zero);
 
-                GL.BindBuffer(BufferTarget.ArrayBuffer, texID);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, TexID);
 				GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, IntPtr.Zero);
 
                 GL.DrawArrays(mode, 0, lenght);
@@ -114,8 +114,8 @@ namespace GLGDIPlus
 
                 for (int i = 0; i < lenght; i++)
                 {
-                    GL.TexCoord2(texcoords[i].u, texcoords[i].v);
-                    GL.Vertex2(vertices[i].x, vertices[i].y);
+                    GL.TexCoord2(Texcoords[i].u, Texcoords[i].v);
+                    GL.Vertex2(Vertices[i].x, Vertices[i].y);
                 }
 
                 GL.End();

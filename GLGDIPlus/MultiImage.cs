@@ -6,11 +6,13 @@ using System.Collections.Generic;
 
 namespace GLGDIPlus
 {
-    public class GLMultiImage : IProperties
+    public class GLMultiImage : GLImageBase
     {
         public Bitmap bitmap;          // Used to load image
-        public int texture;            // Holds image data
+        public int TextureIndex;            // Holds image data
         public VBO vbo = new VBO();
+
+		private bool IsDataBuilded = false;
 
 		// вектор вершин
 		// вектор текстурных координат
@@ -23,8 +25,8 @@ namespace GLGDIPlus
         /// </summary>
 		public GLMultiImage()
         {
-            vbo.vertices = new Vertex[4];    // Create 4 vertices for quad
-            vbo.texcoords = new TexCoord[4]; // Texture coordinates for quad
+            vbo.Vertices = new Vertex[4];    // Create 4 vertices for quad
+            vbo.Texcoords = new TexCoord[4]; // Texture coordinates for quad
         }
 
 		/// <summary>
@@ -33,39 +35,37 @@ namespace GLGDIPlus
 		/// <param name="tiles"></param>
 		public void SetImageTiles( List<RectangleF> tiles )
 		{
+			IsDataBuilded = false;
+
 			int totalC = tiles.Count;
-			if (totalC != (vbo.vertices.Length * 4))
+			if (totalC != (vbo.Vertices.Length * 4))
 			{
-				vbo.vertices = new Vertex[totalC*4];
-				vbo.texcoords = new TexCoord[totalC*4];
+				vbo.Vertices = new Vertex[totalC*4];
+				vbo.Texcoords = new TexCoord[totalC*4];
 			}
 
 			for (int i = 0; i < totalC; i++)
 			{
 				int k = i * 4;
 				RectangleF r = tiles[i];
-				vbo.vertices[k + 0].x = r.X;
-				vbo.vertices[k + 0].y = r.Y + r.Height;
-				vbo.vertices[k + 1].x = r.X + r.Width;
-				vbo.vertices[k + 1].y = r.Y + r.Height;
-				vbo.vertices[k + 2].x = r.X + r.Width;
-				vbo.vertices[k + 2].y = r.Y;
-				vbo.vertices[k + 3].x = r.X;
-				vbo.vertices[k + 3].y = r.Y;
+				vbo.Vertices[k + 0].x = r.X;
+				vbo.Vertices[k + 0].y = r.Y + r.Height;
+				vbo.Vertices[k + 1].x = r.X + r.Width;
+				vbo.Vertices[k + 1].y = r.Y + r.Height;
+				vbo.Vertices[k + 2].x = r.X + r.Width;
+				vbo.Vertices[k + 2].y = r.Y;
+				vbo.Vertices[k + 3].x = r.X;
+				vbo.Vertices[k + 3].y = r.Y;
 
-				vbo.texcoords[k + 0].u = 0;
-				vbo.texcoords[k + 0].v = 1;
-				vbo.texcoords[k + 1].u = 1;
-				vbo.texcoords[k + 1].v = 1;
-				vbo.texcoords[k + 2].u = 1;
-				vbo.texcoords[k + 2].v = 0;
-				vbo.texcoords[k + 3].u = 0;
-				vbo.texcoords[k + 3].v = 0;
+				vbo.Texcoords[k + 0].u = 0;
+				vbo.Texcoords[k + 0].v = 1;
+				vbo.Texcoords[k + 1].u = 1;
+				vbo.Texcoords[k + 1].v = 1;
+				vbo.Texcoords[k + 2].u = 1;
+				vbo.Texcoords[k + 2].v = 0;
+				vbo.Texcoords[k + 3].u = 0;
+				vbo.Texcoords[k + 3].v = 0;
 			}
-
-			vbo.BuildTex();
-
-			vbo.Build();
 		}
 
 
@@ -79,8 +79,8 @@ namespace GLGDIPlus
             bitmap = new Bitmap(path);
 
             // Generate texture
-            GL.GenTextures(1, out texture);
-            GL.BindTexture(TextureTarget.Texture2D, texture);
+            GL.GenTextures(1, out TextureIndex);
+            GL.BindTexture(TextureTarget.Texture2D, TextureIndex);
 
             // Store texture size
             Width = bitmap.Width;
@@ -108,8 +108,8 @@ namespace GLGDIPlus
 			bitmap = src;
 
 			// Generate texture
-			GL.GenTextures(1, out texture);
-			GL.BindTexture(TextureTarget.Texture2D, texture);
+			GL.GenTextures(1, out TextureIndex);
+			GL.BindTexture(TextureTarget.Texture2D, TextureIndex);
 
 			// Store texture size
 			Width = bitmap.Width;
@@ -124,8 +124,8 @@ namespace GLGDIPlus
 			bitmap.UnlockBits(data);
 
 			// Setup filtering
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 		}
 
 
@@ -134,7 +134,7 @@ namespace GLGDIPlus
         /// </summary>
         public void Free()
         {
-            GL.DeleteTextures(1, ref texture);
+            GL.DeleteTextures(1, ref TextureIndex);
         }
 
 
@@ -143,10 +143,10 @@ namespace GLGDIPlus
         /// </summary>
         /// <param name="x">X position of left-upper corner.</param>
         /// <param name="y">Y position of left-upper corner.</param>
-        public void Draw(int x, int y)
-        {
-            Draw(x, y, Width, Height, 0, 0, Width, Height);
-        }
+		//public void Draw(int x, int y)
+		//{
+		//    Draw(x, y, Width, Height, 0, 0, Width, Height);
+		//}
 
 
         /// <summary>
@@ -158,10 +158,10 @@ namespace GLGDIPlus
         /// <param name="imgY">Y positon on image.</param>
         /// <param name="imgW">Width of image part to be drawn.</param>
         /// <param name="imgH">Height of image part to be drawn.</param>
-        public void Draw(int x, int y, int imgX, int imgY, int imgW, int imgH)
-        {
-            Draw(x, y, Width, Height, imgX, imgY, imgW, imgH);
-        }
+		//public void Draw(int x, int y, int imgX, int imgY, int imgW, int imgH)
+		//{
+		//    Draw(x, y, Width, Height, imgX, imgY, imgW, imgH);
+		//}
 
 
         /// <summary>
@@ -171,10 +171,10 @@ namespace GLGDIPlus
         /// <param name="y">Y position of left-upper corner.</param>
         /// <param name="w">Width of image.</param>
         /// <param name="h">Height of image.</param>
-        internal void Draw(int x, int y, int w, int h)
-        {
-            Draw(x, y, w, h, 0, 0, this.Width, this.Height);
-        }
+		//internal void Draw(int x, int y, int w, int h)
+		//{
+		//    Draw(x, y, w, h, 0, 0, this.Width, this.Height);
+		//}
 
 
         /// <summary>
@@ -188,72 +188,28 @@ namespace GLGDIPlus
         /// <param name="imgY">Y positon on image.</param>
         /// <param name="imgW">Width of image part to be drawn.</param>
         /// <param name="imgH">Height of image part to be drawn.</param>
-        internal void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
+        //internal void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
+		internal void Draw()
         {
+			if (!IsDataBuilded)
+			{
+				IsDataBuilded = true;
+				vbo.BuildTex();
+				vbo.BuildVertices();
+			}
+
+			SetBlending();	// всегда включаем блендинг, чтобы прозрачность рисовать
+
             // Prepare drawing
-            Begin(x, y, w, h);
+            Begin(0, 0, Width, Height);
 
             // Bind texture
-            GL.BindTexture(TextureTarget.Texture2D, texture);
+            GL.BindTexture(TextureTarget.Texture2D, TextureIndex);
 
             // Draw VBO
 			vbo.Draw();
 
             End();
-        }
-
-
-        /// <summary>
-        /// Builds texcoords for quad.
-        /// </summary>
-        public void BuildTexcoords()
-        {
-            BuildTexcoords(0.0f, 1.0f, 0.0f, 1.0f);
-        }
-
-
-
-        /// <summary>
-        /// Builds texcoords for quad.
-        /// </summary>
-        /// <param name="u1">U1.</param>
-        /// <param name="u2">U2.</param>
-        /// <param name="v1">V1.</param>
-        /// <param name="v2">V2.</param>
-        public void BuildTexcoords(float u1, float u2, float v1, float v2)
-        {
-            vbo.texcoords[0].u = u1;
-            vbo.texcoords[0].v = v2;
-            vbo.texcoords[1].u = u2;
-            vbo.texcoords[1].v = v2;
-            vbo.texcoords[2].u = u2;
-            vbo.texcoords[2].v = v1;
-            vbo.texcoords[3].u = u1;
-            vbo.texcoords[3].v = v1;
-
-            vbo.BuildTex();
-        }
-
-
-        /// <summary>
-        /// Builds vertices for quad.
-        /// </summary>
-        /// <param name="x">X pos.</param>
-        /// <param name="y">Y pos.</param>
-        /// <param name="w">Width.</param>
-        /// <param name="h">Height.</param>
-        public void BuildVertices(int x, int y, int w, int h)
-        {
-			vbo.vertices[0].x = x;
-			vbo.vertices[0].y = y + h;
-			vbo.vertices[1].x = x + w;
-			vbo.vertices[1].y = y + h;
-			vbo.vertices[2].x = x + w;
-			vbo.vertices[2].y = y;
-			vbo.vertices[3].x = x;
-			vbo.vertices[3].y = y;
-
-            vbo.Build();
         }
 		// ============================================================
 		public bool IsVBOSupported

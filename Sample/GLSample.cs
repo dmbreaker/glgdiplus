@@ -17,6 +17,7 @@ namespace Sample
 
 		GLGraphics mGraphics = new GLGraphics();
 		GLImage mImage = new GLImage();
+		GLMultiImage mMultiImage = new GLMultiImage();
 		// ============================================================
 		public GLSample()
 		{
@@ -42,13 +43,16 @@ namespace Sample
 
 			g.Reset();
 			g.Clear();
-			g.DrawImage(mImage, 10, 100, Width/2, Height/2);	// downscaled image
+			g.DrawMultiImage(mMultiImage);
+
+			g.DrawImage(mImage, 10, 120, mImage.Width/3, mImage.Height/3);	// downscaled image
 			g.FillRectangle(Color.Gray, (Width - 60) / 2, (Height - 40) / 2, 60, 40);
 			g.DrawLine(Color.Green, 0, 0, Width, Height);
 			g.DrawString("This is a text on control", mFont, Color.AliceBlue, 150, 0);
 
-			g.DrawString("Уменьшенное изображение", mFont, Color.AliceBlue, 10, 100+(Height/2));
-			g.DrawString("Functions:\n DrawString\n DrawImage\n DrawLine\n DrawRectangle\n FillRectangle\n DrawPoint\n DrawPoints", mFont, Color.AliceBlue, 350, 0);
+			g.DrawString("Уменьшенное изображение", mFont, Color.AliceBlue, 10, 120 + (mImage.Height / 3));
+			g.DrawString("Functions:\n DrawString\n DrawImage\n DrawLine\n DrawRectangle\n FillRectangle\n DrawPoint\n DrawPoints\n DrawMultiImage", mFont, Color.AliceBlue, 350, 0);
+
 			SwapBuffers();
 		}
 		// ============================================================
@@ -63,10 +67,17 @@ namespace Sample
 			mGraphics.Init();
 			mGraphics.Reset();
 			mGraphics.Clear();
-			mGraphics.SetLinearFiltering(false);	// чтобы картинки были четкими (но при скейлинге они будут пикселизированы)
 			mGraphics.SetClearColor(SystemColors.ActiveCaption);
 
 			mImage.Load("./res/mult.jpg");
+			mMultiImage.Load("./res/tile32.png");
+			mMultiImage.SetImageTiles(new List<RectangleF>() {
+			                                    new RectangleF(0,0,32,32),
+			                                    new RectangleF(32,32,32,32),
+			                                    new RectangleF(64,64,32,32),
+			                                    new RectangleF(0,32,32,32),
+			                                }
+										);
 		}
 
 		private void GLSample_Resize(object sender, EventArgs e)

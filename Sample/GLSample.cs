@@ -46,11 +46,15 @@ namespace Sample
 			g.DrawMultiImage(mMultiImage);
 
 			g.DrawImage(mImage, 10, 120, mImage.Width/3, mImage.Height/3);	// downscaled image
+			Rectangle destR = new Rectangle(10, 250,mImage.Width / 3, mImage.Height / 4);
+			Rectangle srcR = new Rectangle(50,50,mImage.Width/2, mImage.Height);
+			g.DrawImage(mImage, destR, srcR,  new BlendingValues(128,128,128));	// downscaled image
 			g.FillRectangle(Color.Gray, (Width - 60) / 2, (Height - 40) / 2, 60, 40);
 			g.DrawLine(Color.Green, 0, 0, Width, Height);
 			g.DrawString("This is a text on control", mFont, Color.AliceBlue, 150, 0);
 
 			g.DrawString("Уменьшенное изображение", mFont, Color.AliceBlue, 10, 120 + (mImage.Height / 3));
+			g.DrawString("Блендинг + скейлинг части изображения", mFont, Color.AliceBlue, destR.X, destR .Y + (mImage.Height / 4));
 			g.DrawString("Functions:\n DrawString\n DrawImage\n DrawLine\n DrawRectangle\n FillRectangle\n DrawPoint\n DrawPoints\n DrawMultiImage", mFont, Color.AliceBlue, 350, 0);
 
 			SwapBuffers();

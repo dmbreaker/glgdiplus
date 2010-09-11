@@ -19,6 +19,8 @@ namespace GLGDIPlus
 		private bool IsLinearFiltering = false;
 
 		private bool mIsFilteringSet = false;
+
+		private BlendingValues mNoColorChange = new BlendingValues(255);
 		// ============================================================
 		/// <summary>
 		/// Initializes 2D mode.
@@ -184,7 +186,7 @@ namespace GLGDIPlus
 		/// otherwise to NEAREST
 		/// </summary>
 		/// <param name="value"></param>
-		public void SetLinearFiltering(bool value)
+		internal void SetLinearFiltering(bool value)
 		{
 			IsLinearFiltering = value;
 			if (value)
@@ -361,50 +363,80 @@ namespace GLGDIPlus
 		// ============================================================
 		private void EnsureFiltering()
 		{
-			if (!mIsFilteringSet)
-			{
-				mIsFilteringSet = true;
-				SetLinearFiltering(IsLinearFiltering);
-			}
+			//if (!mIsFilteringSet)
+			//{
+			//    mIsFilteringSet = true;
+			//    SetLinearFiltering(IsLinearFiltering);
+			//}
 		}
 		// ============================================================
 		public void DrawImage( GLImage img, int x, int y )
 		{
+			DrawImage(img, x, y, mNoColorChange);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, BlendingValues b)
+		{
 			EnsureFiltering();
 
 			img.IsVBOSupported = IsVBOSupported;
+			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int destWidth, int destHeight)
 		{
+			DrawImage(img, x, y, destWidth, destHeight, mNoColorChange);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, int destWidth, int destHeight, BlendingValues b)
+		{
 			EnsureFiltering();
 
 			img.IsVBOSupported = IsVBOSupported;
+			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y, destWidth, destHeight);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int imgX, int imgY, int imgW, int imgH)
 		{
+			DrawImage(img, x, y, imgX, imgY, imgW, imgH, mNoColorChange);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, int imgX, int imgY, int imgW, int imgH, BlendingValues b)
+		{
 			EnsureFiltering();
 
 			img.IsVBOSupported = IsVBOSupported;
+			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y, imgX, imgY, imgW, imgH);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
 		{
+			DrawImage(img, x, y, w, h, imgX, imgY, imgW, imgH, mNoColorChange);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH, BlendingValues b)
+		{
 			EnsureFiltering();
 
 			img.IsVBOSupported = IsVBOSupported;
+			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, Rectangle dest, Rectangle src)
 		{
+			DrawImage(img, dest, src, mNoColorChange);
+		}
+		// ============================================================
+		public void DrawImage(GLImage img, Rectangle dest, Rectangle src, BlendingValues b)
+		{
 			EnsureFiltering();
 
 			img.IsVBOSupported = IsVBOSupported;
+			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(dest.X, dest.Y, dest.Width, dest.Height,
 						src.X, src.Y, src.Width, src.Height);
 		}

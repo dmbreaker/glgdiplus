@@ -124,8 +124,8 @@ namespace GLGDIPlus
 			bitmap.UnlockBits(data);
 
 			// Setup filtering
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-			//GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 		}
 
 
@@ -191,14 +191,14 @@ namespace GLGDIPlus
         //internal void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
 		internal void Draw()
         {
+			SetBlending();
+
 			if (!IsDataBuilded)
 			{
 				IsDataBuilded = true;
 				vbo.BuildTex();
 				vbo.BuildVertices();
 			}
-
-			SetBlending();	// всегда включаем блендинг, чтобы прозрачность рисовать
 
             // Prepare drawing
             Begin(0, 0, Width, Height);

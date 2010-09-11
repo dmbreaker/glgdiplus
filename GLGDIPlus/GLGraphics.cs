@@ -40,8 +40,8 @@ namespace GLGDIPlus
 			GL.MatrixMode(MatrixMode.Modelview);
 			GL.PushMatrix();
 			GL.LoadIdentity();
-			GL.Translate(0.375, 0.375, 0.0);
-			//GL.Translate(0.0, 0.0, 0.0);
+			//GL.Translate(0.375, 0.375, 0.0);
+			GL.Translate(0.0, 0.0, 0.0);
 
 			GL.PushAttrib(AttribMask.DepthBufferBit);
 			GL.Disable(EnableCap.DepthTest);
@@ -178,7 +178,8 @@ namespace GLGDIPlus
 			GL.Color4((byte)255, (byte)255, (byte)255, (byte)255);
 
 			GL.LoadIdentity();
-			GL.Translate(0.375, 0.375, 0.0);    // Move slightly for pixel precise drawing
+			//GL.Translate(0.375, 0.375, 0.0);    // Move slightly for pixel precise drawing
+			GL.Translate(0, 0, 0.0);
 		}
 
 		/// <summary>
@@ -186,7 +187,7 @@ namespace GLGDIPlus
 		/// otherwise to NEAREST
 		/// </summary>
 		/// <param name="value"></param>
-		internal void SetLinearFiltering(bool value)
+		public void SetLinearFiltering(bool value)
 		{
 			IsLinearFiltering = value;
 			if (value)
@@ -368,6 +369,8 @@ namespace GLGDIPlus
 			//    mIsFilteringSet = true;
 			//    SetLinearFiltering(IsLinearFiltering);
 			//}
+
+			SetLinearFiltering(IsLinearFiltering);
 		}
 		// ============================================================
 		public void DrawImage( GLImage img, int x, int y )
@@ -382,6 +385,8 @@ namespace GLGDIPlus
 			img.IsVBOSupported = IsVBOSupported;
 			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y);
+
+			img.SetBlending(255, 255, 255, 255);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int destWidth, int destHeight)
@@ -396,6 +401,8 @@ namespace GLGDIPlus
 			img.IsVBOSupported = IsVBOSupported;
 			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y, destWidth, destHeight);
+
+			img.SetBlending(255, 255, 255, 255);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int imgX, int imgY, int imgW, int imgH)
@@ -410,6 +417,8 @@ namespace GLGDIPlus
 			img.IsVBOSupported = IsVBOSupported;
 			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y, imgX, imgY, imgW, imgH);
+
+			img.SetBlending(255, 255, 255, 255);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
@@ -424,6 +433,8 @@ namespace GLGDIPlus
 			img.IsVBOSupported = IsVBOSupported;
 			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);
+
+			img.SetBlending(255, 255, 255, 255);
 		}
 		// ============================================================
 		public void DrawImage(GLImage img, Rectangle dest, Rectangle src)
@@ -439,6 +450,8 @@ namespace GLGDIPlus
 			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.Draw(dest.X, dest.Y, dest.Width, dest.Height,
 						src.X, src.Y, src.Width, src.Height);
+
+			img.SetBlending(255,255,255,255);
 		}
 		// ============================================================
 		private opengl.TextPrinter mTPrinterHigh = new opengl.TextPrinter(opengl.TextQuality.High);
@@ -528,11 +541,19 @@ namespace GLGDIPlus
 			DrawString(printer, text, font, c, r);
 		}
 		// ============================================================
-		// incomplete
 		public void DrawMultiImage(GLMultiImage img)
 		{
 			EnsureFiltering();
 
+			img.IsVBOSupported = IsVBOSupported;
+			img.Draw();
+		}
+		// ============================================================
+		public void DrawMultiImage(GLMultiImage img, BlendingValues b)
+		{
+			EnsureFiltering();
+
+			img.SetBlending(b.R, b.G, b.B, b.A);
 			img.IsVBOSupported = IsVBOSupported;
 			img.Draw();
 		}

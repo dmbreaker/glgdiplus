@@ -1,1 +1,1 @@
-src_packer.py -f "../../glgdiplus/" -z "../../glgdiplus_0.1.zip" -d
+src_packer.py -f "../../trunk/" -z "../../glgdiplus_0.1.zip" -d

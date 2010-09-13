@@ -245,10 +245,16 @@ namespace GLGDIPlus
 		// ============================================================
 		public void DrawLine(Color c, int x1, int y1, int x2, int y2)
 		{
+			DrawLine(c, x1, y1, x2, y2, 1f);
+		}
+		// ============================================================
+		public void DrawLine(Color c, int x1, int y1, int x2, int y2, float line_width)
+		{
 			GL.Disable(EnableCap.Texture2D);
 			GL.Enable(EnableCap.ColorArray);
 			GL.Enable(EnableCap.Blend);
 			GL.Color4(c);
+			GL.LineWidth(line_width);
 
 			GL.Begin(BeginMode.Lines);
 
@@ -295,10 +301,16 @@ namespace GLGDIPlus
 		// ============================================================
 		public void DrawRectangle(Color c, int x, int y, int w, int h)
 		{
+			DrawRectangle(c, x, y, w, h, 1f);
+		}
+		// ============================================================
+		public void DrawRectangle(Color c, int x, int y, int w, int h, float line_width)
+		{
 			GL.Disable(EnableCap.Texture2D);
 			GL.Enable(EnableCap.ColorArray);
 			GL.Enable(EnableCap.Blend);
 			GL.Color4(c);
+			GL.LineWidth(line_width);
 
 			GL.Begin(BeginMode.LineStrip);
 

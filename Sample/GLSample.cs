@@ -73,8 +73,8 @@ namespace Sample
 			mGraphics.Clear();
 			mGraphics.SetClearColor(SystemColors.ActiveCaption);
 
-			mImage.Load("./res/mult.jpg");
-			mMultiImage.Load("./res/tile32.png");
+			mImage.Load("../../res/mult.jpg");
+			mMultiImage.Load("../../res/tile32.png");
 			mMultiImage.SetImageTiles(new List<RectangleF>() {
 			                                    new RectangleF(0,0,32,32),
 			                                    new RectangleF(32,32,32,32),

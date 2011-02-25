@@ -18,6 +18,7 @@ namespace Sample
 		GLGraphics mGraphics = new GLGraphics();
 		GLImage mImage = new GLImage();
 		GLMultiImage mMultiImage = new GLMultiImage();
+		GLTriangles mTris = new GLTriangles();
 		// ============================================================
 		public GLSample()
 		{
@@ -57,6 +58,8 @@ namespace Sample
 			g.DrawString("Блендинг + скейлинг части изображения", mFont, Color.AliceBlue, destR.X, destR .Y + (mImage.Height / 4));
 			g.DrawString("Functions:\n DrawString\n DrawImage\n DrawLine\n DrawRectangle\n FillRectangle\n DrawPoint\n DrawPoints\n DrawMultiImage", mFont, Color.AliceBlue, 350, 0);
 
+			g.DrawTris(mTris);
+
 			SwapBuffers();
 		}
 		// ============================================================
@@ -82,6 +85,16 @@ namespace Sample
 			                                    new RectangleF(0,32,32,32),
 			                                }
 										);
+
+			float sx = 280;
+			float sy = 220;
+			float k = 70;
+			var tris = new List<STri>();
+			tris.Add(new STri(sx, sy, sx + k, sy + k, sx + k, sy+20, 0, 0, 1, 1, 1, 0));
+			tris.Add(new STri(sx, sy, sx, sy + k+20, sx + k, sy + k, 0, 0, 0, 1, 1, 1));
+			//tris.Add(new STri(0, 0, 20, 0, 20, 20, 0, 0, 0, 1, 1, 1));
+			mTris.Load("../../res/mult.jpg");
+			mTris.SetVertices(tris);
 		}
 
 		private void GLSample_Resize(object sender, EventArgs e)

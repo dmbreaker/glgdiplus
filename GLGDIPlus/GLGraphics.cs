@@ -570,5 +570,22 @@ namespace GLGDIPlus
 			img.Draw();
 		}
 		// ============================================================
+		public void DrawTris(GLTriangles tris)
+		{
+			EnsureFiltering();
+
+			tris.IsVBOSupported = IsVBOSupported;
+			tris.Draw();
+		}
+		// ============================================================
+		public void DrawTris(GLTriangles tris, BlendingValues b)
+		{
+			EnsureFiltering();
+
+			tris.SetBlending(b.R, b.G, b.B, b.A);
+			tris.IsVBOSupported = IsVBOSupported;
+			tris.Draw();
+		}
+		// ============================================================
 	}
 }

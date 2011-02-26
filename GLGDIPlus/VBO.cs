@@ -87,7 +87,7 @@ namespace GLGDIPlus
         /// </summary>
         /// <param name="lenght">Number of vertices to be drawn from array.</param>
         /// <param name="mode">Mode used for drawing.</param>
-        internal void Draw(int lenght, BeginMode mode)
+        internal void Draw(int length, BeginMode mode)
         {
             // Use VBOs if they are supported
             //if (GL.SupportsExtension("VERSION_1_5"))
@@ -102,7 +102,7 @@ namespace GLGDIPlus
                 GL.BindBuffer(BufferTarget.ArrayBuffer, TexID);
 				GL.TexCoordPointer(2, TexCoordPointerType.Float, 0, IntPtr.Zero);
 
-                GL.DrawArrays(mode, 0, lenght);
+                GL.DrawArrays(mode, 0, length);
 
 				GL.DisableClientState(ArrayCap.VertexArray);
 				GL.DisableClientState(ArrayCap.TextureCoordArray);
@@ -112,7 +112,7 @@ namespace GLGDIPlus
             {
                 GL.Begin(mode);
 
-                for (int i = 0; i < lenght; i++)
+                for (int i = 0; i < length; i++)
                 {
                     GL.TexCoord2(Texcoords[i].u, Texcoords[i].v);
                     GL.Vertex2(Vertices[i].x, Vertices[i].y);

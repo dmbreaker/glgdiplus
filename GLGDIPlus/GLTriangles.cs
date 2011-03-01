@@ -143,6 +143,9 @@ namespace GLGDIPlus
 			// Bind texture
 			GL.BindTexture(TextureTarget.Texture2D, TextureIndex);
 
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
 			// Draw VBO
 			vbo.Draw(BeginMode.Triangles);
 

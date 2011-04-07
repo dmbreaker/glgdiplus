@@ -390,6 +390,11 @@ namespace GLGDIPlus
 			DrawImage(img, x, y, mNoColorChange);
 		}
 		// ============================================================
+		public void DrawImageCentered(GLImage img, int x, int y)
+		{
+			DrawImage(img, x - (img.Width >> 1), y - (img.Height >> 1), mNoColorChange);
+		}
+		// ============================================================
 		public void DrawImage(GLImage img, int x, int y, BlendingValues b)
 		{
 			EnsureFiltering();

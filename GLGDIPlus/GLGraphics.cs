@@ -62,6 +62,21 @@ namespace GLGDIPlus
 		/// <param name="windowH">New height of window.</param>
 		public void Resize(int windowW, int windowH)
 		{
+			int[] viewPort = new int[4];
+
+			GL.GetInteger(GetPName.Viewport, viewPort);
+
+			GL.MatrixMode(MatrixMode.Projection);
+			GL.PushMatrix();
+			GL.LoadIdentity();
+
+			GL.Ortho(viewPort[0], viewPort[0] + viewPort[2], viewPort[1] + viewPort[3], viewPort[1], -1, 1);
+
+			GL.MatrixMode(MatrixMode.Modelview);
+			GL.PushMatrix();
+			GL.LoadIdentity();
+			GL.Translate(0.0, 0.0, 0.0);
+
 			GL.Viewport(0, 0, windowW, windowH);
 		}
 

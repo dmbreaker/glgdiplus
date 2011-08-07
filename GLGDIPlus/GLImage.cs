@@ -7,11 +7,11 @@ namespace GLGDIPlus
 {
     public class GLImage : GLImageBase
     {
-        public Bitmap bitmap;          // Used to load image
-        public int TextureIndex;            // Holds image data
-        public VBO vbo = new VBO();
+        private Bitmap bitmap;          // Used to load image
+        private int TextureIndex;            // Holds image data
+        private VBO vbo = new VBO();
 
-        public bool rebuild = true;
+        private bool rebuild = true;
 
 
         /// <summary>

@@ -143,7 +143,7 @@ namespace GLGDIPlus
 		/// <param name="imgY">Y positon on image.</param>
 		/// <param name="imgW">Width of image part to be drawn.</param>
 		/// <param name="imgH">Height of image part to be drawn.</param>
-		internal void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
+		internal void Draw(int x, int y, int w, int h, float imgX, float imgY, float imgW, float imgH)
 		{
 			SetBlending();	// всегда включаем блендинг, чтобы прозрачность рисовать
 
@@ -151,10 +151,20 @@ namespace GLGDIPlus
 			float u1 = 0.0f, u2 = 0.0f, v1 = 0.0f, v2 = 0.0f;
 
 			// Calculate coordinates, prevent dividing by zero
-			if (imgX != 0) u1 = 1.0f / ((float)this.Width / (float)imgX);
-			if (imgW != 0) u2 = 1.0f / ((float)this.Width / (float)(imgX + imgW));
-			if (imgY != 0) v1 = 1.0f / ((float)this.Height / (float)imgY);
-			if (imgH != 0) v2 = 1.0f / ((float)this.Height / (float)(imgY + imgH));
+			//if (imgX != 0) u1 = 1.0f / ((float)this.Width / (float)imgX);
+			//if (imgW != 0) u2 = 1.0f / ((float)this.Width / (float)(imgX + imgW));
+			//if (imgY != 0) v1 = 1.0f / ((float)this.Height / (float)imgY);
+			//if (imgH != 0) v2 = 1.0f / ((float)this.Height / (float)(imgY + imgH));
+			if (this.Width != 0)
+			{
+				u1 = imgX / (float)this.Width;
+				u2 = (imgX + imgW) / (float)this.Width;
+			}
+			if (this.Height != 0)
+			{
+				v1 = imgY / (float)this.Height;
+				v2 = (imgY + imgH) / (float)this.Height;
+			}
 
 			if (rebuild)
 			{

@@ -116,7 +116,8 @@ namespace GLGDIPlus
         {
             // Translate
             GL.LoadIdentity();
-            GL.Translate(0.375, 0.375, 0.0);
+            //GL.Translate(0.375, 0.375, 0.0);
+			GL.Translate(0.0, 0.0, 0.0);
 
             // Disable blending
             if (IsBlending)

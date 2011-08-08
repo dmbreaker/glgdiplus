@@ -2,12 +2,20 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System;
 
 
 namespace GLGDIPlus
 {
     public class GLImage : GLImageBase
     {
+		const int MAX_W = 512;
+		const int MAX_H = 512;
+
+		int Columns = 0;
+		int Rows = 0;
+		
+
 		List<SImage> mImageParts = new List<SImage>();
 
         /// <summary>
@@ -21,17 +29,17 @@ namespace GLGDIPlus
         /// Loads image from harddisk into memory.
         /// </summary>
         /// <param name="path">Image path.</param>
-        public void Load(string path)
-        {
-			SImage img = new SImage();
-			img.Load(path);
+		//public void Load(string path)
+		//{
+		//    SImage img = new SImage();
+		//    img.Load(path);
 
-			Width = img.Width;
-			Height = img.Height;
+		//    Width = img.Width;
+		//    Height = img.Height;
 
-			Free();
-			mImageParts.Add(img);
-        }
+		//    Free();
+		//    mImageParts.Add(img);
+		//}
 
 		/// <summary>
 		/// Loads image from harddisk into memory.
@@ -39,15 +47,73 @@ namespace GLGDIPlus
 		/// <param name="path">Image path.</param>
 		public void FromBitmap(Bitmap src)
 		{
-			SImage img = new SImage();
-			img.FromBitmap(src);
+			//SImage img = new SImage();
+			//img.FromBitmap(src);
 			
-			Width = img.Width;
-			Height = img.Height;
+			//Width = img.Width;
+			//Height = img.Height;
 
-			Free();
-			mImageParts.Add(img);
+			//Free();
+			//mImageParts.Add(img);
+
+			SetImage(src);
 		}
+
+		// ============================================================
+		private void SetImage(Bitmap src)
+		{
+			Free();
+
+			Width = src.Width;
+			Height = src.Height;
+
+			if (Width < MAX_W && Height < MAX_H)
+			{
+				Columns = 1;
+				Rows = 1;
+
+				SImage img = new SImage();
+				img.FromBitmap(src);
+				mImageParts.Add(img);
+			}
+			else
+			{
+				//if( Width > MAX_W )
+				Columns = (Width + MAX_W - 1) / MAX_W;
+				//if (Height > MAX_H)
+				Rows = (Height + MAX_H - 1) / MAX_H;
+				CreateTiles(src, Columns, Rows);
+			}
+		}
+		// ============================================================
+		private void CreateTiles(Bitmap src, int cols, int rows)
+		{
+			for (int j = 0; j < rows; j++)
+			{
+				for (int i = 0; i < cols; i++)
+				{
+					int xs = i * MAX_W;
+					int ys = j * MAX_H;
+					int w = Math.Min(MAX_W, src.Width - xs);
+					int h = Math.Min(MAX_H, src.Height - ys);
+					//bbox = (xs, ys, xs + w, ys + h)
+					//tile = img.crop(bbox)
+					//result.append(tile)
+					Bitmap tile = new Bitmap(w, h);
+					tile.SetResolution(src.HorizontalResolution, src.VerticalResolution);	// вот хрен поймешь зачем оно нужно. Долбаные DPI...
+					using (Graphics g = Graphics.FromImage(tile))
+					{
+						Rectangle destR = new Rectangle(0, 0, w, h);
+						Rectangle srcR = new Rectangle(xs, ys, w, h);
+						g.DrawImage(src, destR, srcR, GraphicsUnit.Pixel);
+					}
+					SImage simage = new SImage();
+					simage.FromBitmap(tile);
+					mImageParts.Add(simage);
+				}
+			}
+		}
+		// ============================================================
 
 
         /// <summary>
@@ -70,9 +136,20 @@ namespace GLGDIPlus
         /// <param name="y">Y position of left-upper corner.</param>
         internal void Draw(int x, int y)
         {
-			foreach (var img in mImageParts)
+			//foreach (var img in mImageParts)
+			//{
+			//    img.Draw(x, y);	//@
+			//}
+
+			for (int j = 0; j < Rows; j++)
 			{
-				img.Draw(x, y);	//@
+				for (int i = 0; i < Columns; i++)
+				{
+					int xs = i * MAX_W + x;
+					int ys = j * MAX_H + y;
+					SImage img = mImageParts[j * Columns + i];
+					img.Draw(xs, ys);
+				}
 			}
         }
 
@@ -88,12 +165,8 @@ namespace GLGDIPlus
         /// <param name="imgH">Height of image part to be drawn.</param>
 		internal void Draw(int x, int y, int imgX, int imgY, int imgW, int imgH)
         {
-			foreach (var img in mImageParts)
-			{
-				if (imgW == 0 || imgH == 0)
-					continue;
-				img.Draw(x, y, imgX, imgY, imgW, imgH);	//@
-			}
+			//Draw(x, y, Width, Height, imgX, imgY, imgW, imgH);
+			Draw(x, y, imgW, imgH, imgX, imgY, imgW, imgH);
         }
 
 
@@ -106,13 +179,13 @@ namespace GLGDIPlus
         /// <param name="h">Height of image.</param>
 		internal void Draw(int x, int y, int w, int h)
         {
-            //Draw(x, y, w, h, 0, 0, this.Width, this.Height);
-			foreach (var img in mImageParts)
-			{
-				if (w == 0 || h == 0)
-					continue;
-				img.Draw(x, y, w, h);	//@
-			}
+            Draw(x, y, w, h, 0, 0, this.Width, this.Height);
+			//foreach (var img in mImageParts)
+			//{
+			//    if (w == 0 || h == 0)
+			//        continue;
+			//    img.Draw(x, y, w, h);	//@
+			//}
         }
 
 
@@ -161,12 +234,62 @@ namespace GLGDIPlus
 			//vbo.Draw();
 			//End();
 
-			foreach (var img in mImageParts)
+			if (w == 0 || h == 0 || imgW == 0 || imgH == 0)
+				return;
+
+			float scale_x = (float)w / (float)imgW;
+			float scale_y = (float)h / (float)imgH;
+
+			// тайлы, которые будут рисоваться:
+			int begin_col = imgX / MAX_W;
+			int end_col = (imgX + imgW + MAX_W - 1) / MAX_W;
+			int begin_row = imgY / MAX_H;
+			int end_row = (imgY + imgH + MAX_H - 1) / MAX_H;
+
+			float acc_w = 0;
+			float acc_h = 0;
+			for (int j = begin_row; j < end_row; j++)
 			{
-				if( w == 0 || h == 0 || imgW == 0 || imgH == 0 )
-					continue;
-				img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);	//@
+				acc_w = 0;
+				float from_h = 0;
+				for (int i = begin_col; i < end_col; i++)
+				{
+					int sx = i * MAX_W;
+					int sy = j * MAX_H;
+					int tile_w = Math.Min(Width - sx, MAX_W);
+					int tile_h = Math.Min(Height - sy, MAX_H);
+
+					int _sx = Math.Max(imgX - sx, 0);	// positive (start position in tile)
+					int _sy = Math.Max(imgY - sy, 0);	// positive
+
+					float from_w = (float)(tile_w - _sx);	// ready
+					from_h = (float)(tile_h - _sy);	// ready
+					if (acc_w + from_w > (float)imgW)
+						from_w = (float)imgW - acc_w;
+					if (acc_h + from_h > (float)imgH)
+						from_h = (float)imgH - acc_h;
+
+					int result_w = (int)(from_w * scale_x + 0.5f);
+					int result_h = (int)(from_h * scale_y + 0.5f);
+
+					float from_x = (float)_sx;		// ready
+					float from_y = (float)_sy;		// ready
+					int result_x = x + (int)(acc_w * scale_x + 0.5f);
+					int result_y = y + (int)(acc_h * scale_y + 0.5f);
+
+					acc_w += from_w;
+					
+					SImage img = mImageParts[j * Columns + i];
+					// temporary: without scale:
+					img.Draw(result_x, result_y, result_w, result_h, from_x, from_y, from_w, from_h);
+				}
+				acc_h += from_h;
 			}
+
+			//foreach (var img in mImageParts)
+			//{
+			//    img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);	//@
+			//}
         }
 
 

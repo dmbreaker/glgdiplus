@@ -52,6 +52,7 @@
     <Compile Include="GLMultiImage.cs" />
     <Compile Include="GLTriangles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SImage.cs" />
     <Compile Include="STri.cs" />
     <Compile Include="Types.cs" />
     <Compile Include="VBO.cs" />

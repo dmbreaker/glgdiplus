@@ -246,6 +246,12 @@ namespace GLGDIPlus
 			int begin_row = imgY / MAX_H;
 			int end_row = (imgY + imgH + MAX_H - 1) / MAX_H;
 
+			if (begin_row >= Rows || end_row > Rows ||
+				begin_col >= Columns || end_col > Columns)
+			{
+				return;	// nothing to draw
+			}
+
 			float acc_w = 0;
 			float acc_h = 0;
 			for (int j = begin_row; j < end_row; j++)

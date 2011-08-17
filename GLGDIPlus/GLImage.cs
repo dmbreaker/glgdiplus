@@ -202,38 +202,6 @@ namespace GLGDIPlus
         /// <param name="imgH">Height of image part to be drawn.</param>
 		internal void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
         {
-			//SetBlending();	// всегда включаем блендинг, чтобы прозрачность рисовать
-			//// Texture coordinates
-			//float u1 = 0.0f, u2 = 0.0f, v1 = 0.0f, v2 = 0.0f;
-			//// Calculate coordinates, prevent dividing by zero
-			//if (imgX != 0) u1 = 1.0f / ((float)this.Width / (float)imgX);
-			//if (imgW != 0) u2 = 1.0f / ((float)this.Width / (float)(imgX+imgW));
-			//if (imgY != 0) v1 = 1.0f / ((float)this.Height / (float)imgY);
-			//if (imgH != 0) v2 = 1.0f / ((float)this.Height / (float)(imgY+imgH));
-
-			//if (rebuild)
-			//{
-			//    // Check if texture coordinates have changed
-			//    if (vbo.Texcoords[0].u != u1 || vbo.Texcoords[1].u != u2 || vbo.Texcoords[2].v != v1 || vbo.Texcoords[0].v != v2)
-			//    {
-			//        // Update texcoords for all vertices
-			//        BuildTexcoords(u1, u2, v1, v2);
-			//    }
-			//    // Check if position coordinates have changed
-			//    if (vbo.Vertices[0].x != x || vbo.Vertices[2].y != y || vbo.Vertices[0].y != y + h || vbo.Vertices[1].x != x + w)
-			//    {
-			//        BuildVertices(x, y, w, h);
-			//    }
-			//}
-
-			//// Prepare drawing
-			//Begin(x, y, w, h);
-			//// Bind texture
-			//GL.BindTexture(TextureTarget.Texture2D, TextureIndex);
-			//// Draw VBO
-			//vbo.Draw();
-			//End();
-
 			if (w == 0 || h == 0 || imgW == 0 || imgH == 0)
 				return;
 
@@ -286,16 +254,10 @@ namespace GLGDIPlus
 					acc_w += from_w;
 					
 					SImage img = mImageParts[j * Columns + i];
-					// temporary: without scale:
 					img.Draw(result_x, result_y, result_w, result_h, from_x, from_y, from_w, from_h);
 				}
 				acc_h += from_h;
 			}
-
-			//foreach (var img in mImageParts)
-			//{
-			//    img.Draw(x, y, w, h, imgX, imgY, imgW, imgH);	//@
-			//}
         }
 
 

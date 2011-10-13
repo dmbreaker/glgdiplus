@@ -344,5 +344,37 @@ namespace GLGDIPlus
 			}
 		}
 		// ============================================================
+		public void ApplyBlendingValues()
+		{
+			foreach (var simg in mImageParts)
+			{
+				simg.SetBlending(RBlend, GBlend, BBlend, ABlend);
+			}
+		}
+		// ============================================================
+		public override void SetBlending()
+		{
+			base.SetBlending();
+			ApplyBlendingValues();
+		}
+		// ============================================================
+		public override void SetBlending(byte a)
+		{
+			base.SetBlending(a);
+			ApplyBlendingValues();
+		}
+		// ============================================================
+		public override void SetBlending(byte r, byte g, byte b, byte a)
+		{
+			base.SetBlending(r,g,b,a);
+			ApplyBlendingValues();
+		}
+		// ============================================================
+		public override void DisableBlending()
+		{
+			base.DisableBlending();
+			ApplyBlendingValues();
+		}
+		// ============================================================
     }
 }

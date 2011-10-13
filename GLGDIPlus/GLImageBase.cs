@@ -27,7 +27,7 @@ namespace GLGDIPlus
         /// <summary>
         /// Sets blending.
         /// </summary>
-        public void SetBlending()
+        public virtual void SetBlending()
         {
             IsBlending = true;
         }
@@ -38,7 +38,7 @@ namespace GLGDIPlus
         /// Sets blending.
         /// </summary>
         /// <param name="a">Alpha intensity.</param>
-        public void SetBlending(byte a)
+		public virtual void SetBlending(byte a)
         {
             IsBlending = true;
 
@@ -53,7 +53,7 @@ namespace GLGDIPlus
         /// <param name="g">Green intensity.</param>
         /// <param name="b">Blue intensity.</param>
         /// <param name="a">Alpha intensity.</param>
-        public void SetBlending(byte r, byte g, byte b, byte a)
+		public virtual void SetBlending(byte r, byte g, byte b, byte a)
         {
             IsBlending = true;
 
@@ -67,7 +67,7 @@ namespace GLGDIPlus
         /// <summary>
         /// Disables blending.
         /// </summary>
-        public void DisableBlending()
+		public virtual void DisableBlending()
         {
             IsBlending = false;
         }

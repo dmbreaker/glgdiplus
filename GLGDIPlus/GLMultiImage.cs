@@ -38,7 +38,9 @@ namespace GLGDIPlus
 			IsDataBuilded = false;
 
 			int totalC = tiles.Count;
-			if (totalC != (vbo.Vertices.Length * 4))
+			if( totalC == 0 )
+				return;
+			if (totalC*4 != (vbo.Vertices.Length))
 			{
 				vbo.Vertices = new Vertex[totalC*4];
 				vbo.Texcoords = new TexCoord[totalC*4];
